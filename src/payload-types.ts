@@ -166,32 +166,55 @@ export interface Page {
   id: number;
   title: string;
   slug: string;
-  layout: {
-    heading: string;
-    subheading: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
+  layout: (
+    | {
+        heading: string;
+        subheading: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    image: number | Media;
-    cta_btn: {
-      label: string;
-      url: string;
-    };
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'hero';
-  }[];
+        };
+        image: number | Media;
+        cta_btn: {
+          label: string;
+          url: string;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'hero';
+      }
+    | {
+        Heading: string;
+        Content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }
+  )[];
   updatedAt: string;
   createdAt: string;
 }
@@ -318,6 +341,14 @@ export interface PagesSelect<T extends boolean = true> {
                     label?: T;
                     url?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              Heading?: T;
+              Content?: T;
               id?: T;
               blockName?: T;
             };
