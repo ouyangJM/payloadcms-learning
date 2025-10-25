@@ -13,10 +13,50 @@ export const Pages: CollectionConfig = {
             type: "text",
             required:true,
         },
-        // {
-        //     name:"",
-        //     type:"text",
-        //     required:
-        // }
+        {
+            name: "layout",
+            type: "blocks",
+            required: true,
+            blocks: [
+                {
+                    slug: "hero",
+                    fields: [
+                        {
+                            name: "heading",
+                            type: "text",
+                            required: true
+                        },
+                        {
+                            name: "subheading",
+                            type: "richText",
+                            required: true
+                        },
+                        {
+                            name: "image",
+                            type: "upload",
+                            required:true,
+                            relationTo: "media"
+                        },
+                        {
+                            name: "cta_btn",
+                            label: "CTA Button",
+                            type: "group",
+                            fields: [
+                                {
+                                    name: "label",
+                                    type: "text",
+                                    required: true
+                                },
+                                {
+                                    name: "url",
+                                    type: "text",
+                                    required: true
+                                }
+                            ],
+                        }
+                    ]
+                }
+            ]
+        }
     ],
 } 

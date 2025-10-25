@@ -2,3 +2,4 @@
     - add collection
     - render page
 2.blocks field
+    - add blocks in collection
