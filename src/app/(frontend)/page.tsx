@@ -9,6 +9,7 @@ import './styles.css'
 import { Page } from '@/payload-types'
 import HeroBlock from './components/HeroBlock'
 import ContentBlock from './components/ContentBlock'
+import NewsletterFormBlock from './components/NewsletterFormBlock'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -32,6 +33,8 @@ export default async function HomePage() {
         return <HeroBlock key={block.id} block={block} />;
       case "content":
         return <ContentBlock key={block.id} block={block} />;
+      case "newsletter-form":
+        return <NewsletterFormBlock key={block.id} block={block} />;
       default:
         return null;
     }

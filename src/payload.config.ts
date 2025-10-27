@@ -10,6 +10,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 // import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 
 const filename = fileURLToPath(import.meta.url)
@@ -36,9 +37,9 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
-    // formBuilderPlugin({
-    //   // see below for a list of available options
-    // })
+    formBuilderPlugin({
+      // see below for a list of available options
+    })
     // storage-adapter-placeholder
   ],
 })
