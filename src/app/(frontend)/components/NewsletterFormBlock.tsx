@@ -1,15 +1,78 @@
 "use client"
 import { Page } from '@/payload-types'
-import React from 'react'
-
+import { RichText } from '@payloadcms/richtext-lexical/react'
+import React, { useState } from 'react'
+type FormState = {
+    loading: boolean,
+    error: string | null,
+    success: boolean
+}
 type NewsletterFormProps = Extract<Page["layout"][0], { blockType: "newsletter-form" }>
 export default function NewsletterFormBlock({ block }: { block: NewsletterFormProps }) {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const [formState, setFormState] = useState<FormState>({
+        loading: false,
+        error: null,
+        success: false
+    });
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // console.log(e.target)
         e.preventDefault();
+        if (!block?.form || typeof block.form !== "object") return;
+
+        setFormState({
+            loading: true,
+            error: null,
+            success: false
+        })
+
         const formData = new FormData(e.target as HTMLFormElement);
-        const data = Object.fromEntries(formData);
+        const data = Object.fromEntries(formData.entries());
         console.log(data);
+
+        try {
+            const response = await fetch("/api/form-submissions", {
+                method: "POST",
+                body: JSON.stringify({
+                    form: block.form.id,
+                    submissionData: Object.entries(data)?.map(([field, value]) => {
+                        return {
+                            field,
+                            value: value as string
+                        }
+                    })
+                }),
+                headers: {
+                    "content-type": "application/json"
+                }
+            })
+            if (!response.ok) {
+                throw new Error("Failed to submit form");
+            }
+
+
+            setFormState({
+                loading: false,
+                error: null,
+                success: true
+            });
+            (e.target as HTMLFormElement).reset();
+
+            setTimeout(() => {
+                setFormState({
+                    loading: false,
+                    error: null,
+                    success: true
+                });
+            }, 5000);
+        } catch (error) {
+            console.error('err', error);
+            setFormState({
+                loading: false,
+                error: "Failed to submit form",
+                success: false
+            });
+        }
     }
     return (
         <div style={{
@@ -45,7 +108,16 @@ export default function NewsletterFormBlock({ block }: { block: NewsletterFormPr
                                         }} />
                                 </div>
                             ))}
-                            <button type="submit" style={{ margin: "15px" }}>{block.form.submitButtonLabel || "Submit"}</button>
+                            {
+                                formState.error && <p style={{ color: "red" }}>{formState.error}</p>
+                            }
+                            {
+                                formState.success ? <div style={{ color: "green" }}>
+                                    <RichText data={block?.form?.confirmationMessage!} />
+                                </div> :
+                                    <button type="submit" style={{ margin: "15px" }}>{block.form.submitButtonLabel || "Submit"}</button>
+
+                            }
                         </form>
                     </div>
                 )
